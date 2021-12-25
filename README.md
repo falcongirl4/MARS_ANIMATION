@@ -11,7 +11,7 @@ Last, find the LINK to the WEBSITE at the bottom of this page.
 -----
 
 ### GOALS
-- Create a Website for falconflower to POST her digital art - FOREVER!
+- Create a Website for FalconGirl4 to POST her digital art - FOREVER!
 - Introduce HTML, CSS, and JavaScript.
 - Learn Web Design.
 - Practice Web Collaboration.
