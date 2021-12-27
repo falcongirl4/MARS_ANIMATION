@@ -19,6 +19,13 @@ Last, find the LINK to the WEBSITE at the bottom of this page.
 - Experience DIGITAL ART GRAPHICS - with GIMP.
 - Explore DIGITAL ART - with HTML5 CANVAS ANIMATION!
 ----
+### SKILLS 
+- Creative
+- Design
+- Technical
+- Collaborative
+- Project Management
+----
 #### DESIGN
 - Rock texture
 - Background star animation
