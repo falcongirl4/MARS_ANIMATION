@@ -20,6 +20,7 @@ Last, find the LINK to the WEBSITE at the bottom of this page.
 - Explore DIGITAL ART - with HTML5 CANVAS ANIMATION!
 ----
 #### DESIGN
+- Rock texture
 - Background star animation
 - Plant animation
 - Distance animation
