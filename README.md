@@ -1,7 +1,7 @@
 # FirstWebsite
 ## PURPOSE
-First website to learn how to Design and Code!
 ### MARS STARSHIP SIMULATION!!!
+First website to learn how to Design and Code!
 ----
 Over Google Meetup, the team BUILDS an animated website together.
 We use CLOUD COLLABORATION, on GitHub, to HOST a STARSHIP SIMULATION!
@@ -19,7 +19,15 @@ Last, find the LINK to the WEBSITE at the bottom of this page.
 - Experience DIGITAL ART GRAPHICS - with GIMP.
 - Explore DIGITAL ART - with HTML5 CANVAS ANIMATION!
 ----
+### SKILLS 
+- Creative
+- Design
+- Technical
+- Collaborative
+- Project Management
+----
 #### DESIGN
+- Rock texture
 - Background star animation
 - Plant animation
 - Distance animation
