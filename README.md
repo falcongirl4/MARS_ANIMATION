@@ -34,11 +34,15 @@ Last, find the LINK to the WEBSITE at the bottom of this page.
 - StarShip animation
 - Start and Launch buttons
 ----
-#### REFERENCES
+#### REFERENCES / ATTRIBUTIONS / CC0
 - HTML5 Canvas Documentation
 - Starfield Animations
 - Planet Images
-- Starship Image
+- Starship Images CC0
+    - https://pixabay.com/vectors/rocket-space-ship-space-launch-312767/
+    - https://pixabay.com/vectors/rocket-spaceship-space-shuttle-nasa-147466/
+    - https://www.goodfreephotos.com/astrophotography/comparison-of-earth-and-mars.jpg.php
+    
 ----
 Deployed Link: https://falcongirl4.github.io/FirstWebsite/ 
 Enjoy!!!
