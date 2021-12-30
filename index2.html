@@ -56,7 +56,160 @@
 
     <footer>Made by falcongirl4 and team.</footer>
 </body>
+
 <script>
+
+var canvas=document.getElementById("canvas");
+var ctx=canvas.getContext("2d");
+
+var cx=50;
+var cy=50;
+var radius=4;
+
+// a variable to hold the current degree of rotation
+var degreeAngle=0;
+
+// load an image
+// when the image is fully loaded, call start()
+// start() will start the animation loop
+var img=new Image();
+img.onload=start;
+img.src="./images/rocket3.png";
+function start(){
+    animate();
+}
+
+// this is an animation loop
+// using requestAnimationFrame
+let RUN_INDEX = 0;
+let moveIDX = 0;
+let scaleDWN = 0;
+function animate(){
+    
+    // request that this animate() function be called again
+    // this creates an animation loop
+    // requestAnimationFrame(animate);
+    
+    // clear the canvas
+    
+    // calculate the new position of the image
+    // this example just rotates it around a centerpoint   
+    // degreeAngle+=1;
+    // var radianAngle=degreeAngle*Math.PI/180;
+    // var x=cx+radius*Math.cos(radianAngle);
+    // var y=cy+radius*Math.sin(radianAngle);
+    var x = 50, y=50;
+    RUN_INDEX += 0.04;
+    moveIDX += 0.04;
+    var rotateIDX = 0;
+    // clear the canvas 
+    console.log(RUN_INDEX)
+    // and draw the image at its new position
+    if(RUN_INDEX <= 5){
+        ctx.clearRect(0,0,canvas.width,canvas.height);
+        // ctx.rotate(45 * Math.PI / 180);
+        ctx.drawImage(img,x+moveIDX,y); 
+    } else if (RUN_INDEX <= 10 ){
+        rotateIDX = 0.04;
+        ctx.clearRect(0,0,canvas.width,canvas.height);
+        ctx.translate(80, 80);
+        ctx.rotate(0.004);
+        ctx.translate(-80, -80);
+        ctx.drawImage(img,x+moveIDX,y);       
+    } else if (RUN_INDEX <= 20){
+        scaleDWN += 0.004;
+        scale = 1-scaleDWN;
+
+                ctx.clearRect(0,0,canvas.width,canvas.height);
+//                 ctx.setTransform(scale, 0, 0, scale, ctx.canvas.width / 2, ctx.canvas.height / 2);
+// ctx.drawImage(img,-img.width / 2,-img.height / 2);
+
+
+ctx.save();
+    // Translate to the center point of our image
+    ctx.translate(x + img.width * 0.5, y + img.height * 0.5);
+    // Perform the scale
+    ctx.scale(scale, scale);
+    // Translate back to the top left of our image
+    ctx.translate(-img.width * 0.5, -img.height * 0.5);
+    // Finally we draw the image
+    ctx.drawImage(img, 0, 0);
+    // And restore the context ready for the next loop
+    ctx.restore();
+
+//         ctx.setTransform(1-scaleDWN, 0, 0, 1-scaleDWN, ctx.canvas.width / 2, ctx.canvas.height / 2);
+// ctx.drawImage(img,-64 / 2,-64 / 2); // draw the image offset by half
+
+// ctx.scale(1-scaleDWN, 1-scaleDWN);
+// var x = (ctx.canvas.width / 1-scaleDWN - img.width) / 2;
+// var y = (ctx.canvas.height / 1-scaleDWN - img.height) / 2;
+// ctx.drawImage(img, x, y);
+
+// ctx.translate(x, y);
+// ctx.translate(-64/2, -64/2);
+// ctx.drawImage(img, 0, 0, 64, 64);
+// //context.restore();
+// ctx.setTransform(1,0,0,1,0,0);   // reset matrix
+
+
+//         ctx.clearRect(0,0,canvas.width,canvas.height);
+// ctx.save();
+// ctx.translate( x-50, y-50 );
+// ctx.scale(1-scaleDWN,1-scaleDWN );
+// ctx.drawImage(img,x,y); 
+// ctx.restore();
+        
+    } else {
+        return;
+    }
+    requestAnimationFrame(animate);
+    
+}
+
+
+</script>
+
+<!--script>
+    "use strict";
+    let canvas;
+    let ANMCTX;
+    let rocketIMG;
+
+    window.onload = init;
+    function init(){
+        canvas = document.getElementById('canvas');
+        ANMCTX = canvas.getContext('2d');
+        //INIT----------------ROCKET-.
+        rocketIMG = new Image();
+        rocketIMG.onload = drawRocketIMG; 
+        rocketIMG.src = './images/rocket3.png';
+        function drawRocketIMG() {
+            // ANMCTX.imageSmoothingEnabled = false;
+            ANMCTX.setTransform(1, 0, 0, 1, 0, 0);
+            ANMCTX.rotate(45 * Math.PI / 180);
+            ANMCTX.drawImage(rocketIMG, 100, 30, 64, 64);
+            // ANMCTX.drawImage(rocketIMG, 5, 5, 64, 64, 0, 0, 64, 64);
+        }
+
+        window.requestAnimationFrame(ANMLOOP); //first frame
+    }
+    function ANMLOOP(timeStamp){
+        // console.log('f');
+        window.requestAnimationFrame(ANMLOOP); //recursive next frame
+        ANM();
+    }
+    let index = 1;
+    function ANM(){
+        index+=0.04;
+        // ANMCTX.clear();
+        ANMCTX.clearRect(0,0,64,64);
+        ANMCTX.setTransform(1, 0, 0, 1, 0, 0);
+        ANMCTX.rotate(45 * Math.PI / 180);
+        ANMCTX.drawImage(rocketIMG, 100-index, 30, 64, 64);
+    }
+</script-->
+
+<!--script>
 
 var domCanvas = document.getElementById('canvas');
 var domContext = domCanvas.getContext('2d');
@@ -107,12 +260,14 @@ function drawRocketIMG() {
   domContext.drawImage(this, 50, 50, 80, 80);
 }
 
+// ctx.setTransform(1, 0, 0, 1, 0, 0);
+
 /* render virtual canvases on DOM canvas */
 domContext.drawImage(canvas, 0, 0, 200, 200);
 domContext.drawImage(canvas3, 0, 0, 200, 200);
 // domContext.drawImage(canvas2, 0, 0, 200, 200);
 
-</script>
+</script-->
 <!--script>
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
