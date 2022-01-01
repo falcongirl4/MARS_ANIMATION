@@ -45,12 +45,30 @@
             border: 1px solid steelblue;
             border-radius: 8px;
         }
+        #restartBtn {
+            cursor: pointer;
+            height: 4em;
+            width: 8em;
+            border-radius: 22px;
+            background: blueviolet;
+            font-style: oblique;
+            font-weight: bold;
+            text-shadow: -1px -1px 0px lightsteelblue;
+            border: 2px solid lightskyblue;
+            box-shadow: 0px 1px 7px 4px steelblue;
+            display:none;
+        }
+        #btnBar {
+            display: flex;
+            justify-content: center;
+        }
     </style>
 </head>
 <body>
     <header>MARS SIMULATION</header>
     <section>
         <canvas id="canvas"></canvas>
+        <aside id="btnBar"><button id="restartBtn">RESTART</button></aside>
         <!-- <canvas id="canvasID"></canvas> -->
     </section>
 
@@ -58,6 +76,7 @@
 </body>
 
 <script>
+var restartBTN = document.getElementById('restartBtn');
 var canvas=document.getElementById("canvas");
 var ctx=canvas.getContext("2d");
 let moveIDX = 0;
@@ -79,11 +98,15 @@ var marsCTX = marsCanvas.getContext('2d');
 var marsIMG = new Image(60, 60);
 marsIMG.src = './images/mars1.png';
 marsIMG.onload = START_ANM; 
-
 var IMG_COUNT = 0;
 function START_ANM(){ IMG_COUNT++; if(IMG_COUNT>=3){ ANM_LOOP(); } }
-// function RE_START_ANM(){ moveIDX = 0; scaleDWN = 0; ANM_FRAME = 0; ANM_LOOP(); }
-//TODO: anm stars, anm planet, anm rocket, anm end. restart.
+function RE_START_ANM(){ moveIDX=0; scaleDWN=0; ANM_FRAME=0; rocketIDX=0; 
+    rocketCanvas = document.createElement('canvas')
+    rocketCTX = rocketCanvas.getContext('2d');
+    rocketIMG = new Image();
+    rocketIMG.src = "./images/rocket3.png";
+    rocketIMG.onload = ANM_LOOP; 
+}
 function ANM_LOOP(){
     ANM_FRAME += 0.04;
     // console.log(ANM_FRAME)
@@ -157,8 +180,7 @@ function ANM_LOOP(){
         ctx.font = "bold 44pt Impact";
         ctx.fillText("THE END",canvas.width/2-88,canvas.height/2-100);
 
-        return;
-
+        restartBTN.style.display = "block"
 
         return;
     }
@@ -264,6 +286,13 @@ window.onresize = () => {
     setCanvasExtents();
 };
 
+
+var restartBTN = document.getElementById('restartBtn');
+restartBTN.addEventListener("click", function(){
+    console.log('restart');
+    restartBTN.style.display = "none";
+    RE_START_ANM();
+});
 </script>
 
 <!--script>
