@@ -58,90 +58,98 @@
 </body>
 
 <script>
-
 var canvas=document.getElementById("canvas");
 var ctx=canvas.getContext("2d");
-
-var cx=50;
-var cy=50;
-var radius=4;
-
-// a variable to hold the current degree of rotation
-var degreeAngle=0;
-
-// load an image
-// when the image is fully loaded, call start()
-// start() will start the animation loop
-var img = new Image();
-img.onload = start;
-img.src = "./images/rocket3.png";
-function start(){
-    animate();
-}
-
-// this is an animation loop
-// using requestAnimationFrame
-let ANM_FRAME = 0;
 let moveIDX = 0;
-let scaleDWN = 0;
-function animate(){
-    
-    // request that this animate() function be called again
-    // this creates an animation loop
-    // requestAnimationFrame(animate);
-    
-    // clear the canvas
-    
-    // calculate the new position of the image
-    // this example just rotates it around a centerpoint   
-    // degreeAngle+=1;
-    // var radianAngle=degreeAngle*Math.PI/180;
-    // var x=cx+radius*Math.cos(radianAngle);
-    // var y=cy+radius*Math.sin(radianAngle);
-    var x = 50, y=50;
+let scaleDWN = 0, scaleUP = 0;
+let ANM_FRAME = 0;
+let rocketIDX = 0;
+var rocketCanvas = document.createElement('canvas')
+var rocketCTX = rocketCanvas.getContext('2d');
+var rocketIMG = new Image();
+rocketIMG.src = "./images/rocket3.png";
+rocketIMG.onload = START_ANM;
+var earthCanvas = document.createElement('canvas')
+var earthCTX = earthCanvas.getContext('2d');
+var earthIMG = new Image(60, 60);
+earthIMG.src = './images/earth1.png';
+earthIMG.onload = START_ANM; 
+var marsCanvas = document.createElement('canvas')
+var marsCTX = marsCanvas.getContext('2d');
+var marsIMG = new Image(60, 60);
+marsIMG.src = './images/mars1.png';
+marsIMG.onload = START_ANM; 
+var IMG_COUNT = 0;
+function START_ANM(){ IMG_COUNT++; if(IMG_COUNT>=3){ ANM_LOOP(); } }
+// function RE_START_ANM(){ moveIDX = 0; scaleDWN = 0; ANM_FRAME = 0; ANM_LOOP(); }
+//TODO: anm stars, anm planet, anm rocket, anm end. restart.
+function ANM_LOOP(){
     ANM_FRAME += 0.04;
+    // console.log(ANM_FRAME)
+    var x = 50, y=50;
     moveIDX += 0.08;
     var rotateIDX = 0;
-    // clear the canvas 
-    console.log(ANM_FRAME)
-    // and draw the image at its new position
-    if(ANM_FRAME <= 5){
-        ctx.clearRect(0,0,canvas.width,canvas.height);
-        // ctx.rotate(45 * Math.PI / 180);
-        ctx.drawImage(img,x+moveIDX,y); 
-    } else if (ANM_FRAME <= 10 ){
-        rotateIDX = 0.04;
-        ctx.clearRect(0,0,canvas.width,canvas.height);
-        ctx.translate(80, 80);
-        ctx.rotate(0.004);
-        ctx.translate(-80, -80);
-        ctx.drawImage(img,x+moveIDX,y);       
-    } else if (ANM_FRAME <= 20){
-        scaleDWN += 0.004;
-        scale = 1-scaleDWN;
+    if(ANM_FRAME <= 1){ //anmstars
+
+    } else if (ANM_FRAME <= 8 ){ //anmplanet
 
         ctx.clearRect(0,0,canvas.width,canvas.height);
+        earthCTX.drawImage(earthIMG, 0, 0, 80, 80);
+        ctx.drawImage(earthCanvas, 0, 0, 400, 200);
+        marsCTX.drawImage(marsIMG, 50, 50, 80, 80);
+        ctx.drawImage(marsCanvas, 0, 0, 400, 200);
 
-        ctx.save();
-        // Translate to the center point of our image
-        ctx.translate(x + img.width * 0.5, y + img.height * 0.5);
-        // Perform the scale
-        ctx.scale(scale, scale);
-        // Translate back to the top left of our image
-        ctx.translate(-img.width * 0.5, -img.height * 0.5);
-        // Finally we draw the image
-        ctx.drawImage(img, 0, 0);
-        // And restore the context ready for the next loop
-        ctx.restore();
-        
-    } else {
+
+
+    } else if (ANM_FRAME <= 20){ //anmrocket
+        rocketIDX += 0.04;
+        console.log("rocket",rocketIDX);
+        ctx.clearRect(0,0,canvas.width,canvas.height);
+        earthCTX.drawImage(earthIMG, 0, 0, 80, 80);
+        ctx.drawImage(earthCanvas, 0, 0, 400, 200);
+        marsCTX.drawImage(marsIMG, 50, 50, 80, 80);
+        ctx.drawImage(marsCanvas, 0, 0, 400, 200);
+        if(rocketIDX <= 2){
+            scaleUP += 0.004;
+            scale = 1+scaleUP;
+            rocketCTX.clearRect(0,0,canvas.width,canvas.height);
+            rocketCTX.save();
+            rocketCTX.translate(x + rocketIMG.width + 10, y + rocketIMG.height );
+            rocketCTX.scale(scale, scale);
+            rocketCTX.translate(-rocketIMG.width + 10, -rocketIMG.height );
+            rocketCTX.drawImage(rocketIMG, 0, 0);
+            rocketCTX.restore();
+            ctx.drawImage(rocketCanvas, 0, 0, 400, 200);
+        } else if (rocketIDX <= 6){
+            rocketCTX.clearRect(0,0,canvas.width,canvas.height);
+            rocketCTX.drawImage(rocketIMG,x+moveIDX,y);
+            ctx.drawImage(rocketCanvas, 0, 0, 400, 200); 
+        } else if (rocketIDX <= 10){
+            rotateIDX = 0.04;
+            rocketCTX.clearRect(0,0,canvas.width,canvas.height);
+            rocketCTX.translate(80, 80);
+            rocketCTX.rotate(0.004);
+            rocketCTX.translate(-80, -80);
+            rocketCTX.drawImage(rocketIMG,x+moveIDX,y); 
+            ctx.drawImage(rocketCanvas, 0, 0, 400, 200);
+        } else if (rocketIDX <= 10){
+            scaleDWN += 0.004;
+            scale = 1-scaleDWN;
+            rocketCTX.clearRect(0,0,canvas.width,canvas.height);
+            rocketCTX.save();
+            rocketCTX.translate(x + rocketIMG.width + 10, y + rocketIMG.height );
+            rocketCTX.scale(scale, scale);
+            rocketCTX.translate(-rocketIMG.width + 10, -rocketIMG.height );
+            rocketCTX.drawImage(rocketIMG, 0, 0);
+            rocketCTX.restore();
+            ctx.drawImage(rocketCanvas, 0, 0, 400, 200);
+        }
+
+    } else {  //anmend
         return;
     }
-    requestAnimationFrame(animate);
-    
+    requestAnimationFrame(ANM_LOOP);
 }
-
-
 </script>
 
 <!--script>
