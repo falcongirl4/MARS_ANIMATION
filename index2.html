@@ -79,6 +79,7 @@ var marsCTX = marsCanvas.getContext('2d');
 var marsIMG = new Image(60, 60);
 marsIMG.src = './images/mars1.png';
 marsIMG.onload = START_ANM; 
+
 var IMG_COUNT = 0;
 function START_ANM(){ IMG_COUNT++; if(IMG_COUNT>=3){ ANM_LOOP(); } }
 // function RE_START_ANM(){ moveIDX = 0; scaleDWN = 0; ANM_FRAME = 0; ANM_LOOP(); }
@@ -90,18 +91,17 @@ function ANM_LOOP(){
     moveIDX += 0.08;
     var rotateIDX = 0;
     if(ANM_FRAME <= 1){ //anmstars
+        anmSTARS();
 
     } else if (ANM_FRAME <= 8 ){ //anmplanet
 
-        ctx.clearRect(0,0,canvas.width,canvas.height);
+        
         earthCTX.drawImage(earthIMG, 0, 0, 80, 80);
         ctx.drawImage(earthCanvas, 0, 0, 400, 200);
         marsCTX.drawImage(marsIMG, 50, 50, 80, 80);
         ctx.drawImage(marsCanvas, 0, 0, 400, 200);
 
-
-
-    } else if (ANM_FRAME <= 20){ //anmrocket
+    } else if (ANM_FRAME <= 40){ //anmrocket
         rocketIDX += 0.04;
         console.log("rocket",rocketIDX);
         ctx.clearRect(0,0,canvas.width,canvas.height);
@@ -109,7 +109,7 @@ function ANM_LOOP(){
         ctx.drawImage(earthCanvas, 0, 0, 400, 200);
         marsCTX.drawImage(marsIMG, 50, 50, 80, 80);
         ctx.drawImage(marsCanvas, 0, 0, 400, 200);
-        if(rocketIDX <= 2){
+        if(rocketIDX <= 1){
             scaleUP += 0.004;
             scale = 1+scaleUP;
             rocketCTX.clearRect(0,0,canvas.width,canvas.height);
@@ -120,11 +120,11 @@ function ANM_LOOP(){
             rocketCTX.drawImage(rocketIMG, 0, 0);
             rocketCTX.restore();
             ctx.drawImage(rocketCanvas, 0, 0, 400, 200);
-        } else if (rocketIDX <= 6){
+        } else if (rocketIDX <= 10){
             rocketCTX.clearRect(0,0,canvas.width,canvas.height);
             rocketCTX.drawImage(rocketIMG,x+moveIDX,y);
             ctx.drawImage(rocketCanvas, 0, 0, 400, 200); 
-        } else if (rocketIDX <= 10){
+        } else if (rocketIDX <= 20){
             rotateIDX = 0.04;
             rocketCTX.clearRect(0,0,canvas.width,canvas.height);
             rocketCTX.translate(80, 80);
@@ -132,7 +132,7 @@ function ANM_LOOP(){
             rocketCTX.translate(-80, -80);
             rocketCTX.drawImage(rocketIMG,x+moveIDX,y); 
             ctx.drawImage(rocketCanvas, 0, 0, 400, 200);
-        } else if (rocketIDX <= 10){
+        } else if (rocketIDX <= 30){
             scaleDWN += 0.004;
             scale = 1-scaleDWN;
             rocketCTX.clearRect(0,0,canvas.width,canvas.height);
@@ -146,10 +146,124 @@ function ANM_LOOP(){
         }
 
     } else {  //anmend
+        console.log('THE END');
+
+        ctx.clearRect(0,0,canvas.width,canvas.height);
+
+        earthCTX.drawImage(earthIMG, 0, 0, 80, 80);
+        ctx.drawImage(earthCanvas, 0, 0, 400, 200);
+        
+        ctx.fillStyle = "skyblue";
+        ctx.font = "bold 44pt Impact";
+        ctx.fillText("THE END",canvas.width/2-88,canvas.height/2-100);
+
+        return;
+
+
         return;
     }
     requestAnimationFrame(ANM_LOOP);
 }
+/********************************************STARS***********************************/
+function anmSTARS(){
+    requestAnimationFrame(tick);
+}
+const canvasOBJ = document.getElementById("canvas");
+const starCTX = canvasOBJ.getContext("2d");
+
+const makeStars = function (count) {
+    const out = [];
+    for (let i=0;i<count;i++){
+        const s = {
+            x: Math.random()*1600-800,
+            y: Math.random()*900-450,
+            z: Math.random()*1000
+        };
+        out.push(s);
+    }
+    return out;
+}
+
+let stars = makeStars( 10000 );
+
+const clear = () => {
+    starCTX.fillStyle = "black";
+    starCTX.fillRect(0, 0, canvasOBJ.width, canvasOBJ.height);
+};
+
+const putPixel = (x, y, brightness) => {
+    const intensity = brightness * 255;
+    const rgb = "rgb(" + intensity + "," + intensity + "," + intensity + ")";
+    starCTX.fillStyle = rgb;
+    starCTX.fillRect(x, y, 1, 1);
+};
+
+const moveStars = (distance) => {
+    const count = stars.length;
+    for (var i = 0; i < count; i++) {
+        const s = stars[i];
+        s.z -= distance;
+        while (s.z <= 1){
+            s.z += 1000;
+        }
+    }
+}
+
+let prevTime;
+const init = time => {
+    prevTime = time;
+    requestAnimationFrame(tick);
+};
+
+const tick = time => {
+    let elapsed = time - prevTime;
+    prevTime = time;
+
+    moveStars(elapsed*0.1);
+
+    clear();
+
+    const cx = w/2;
+    const cy = h/2;
+
+    const count = stars.length;
+    for (var i = 0; i < count; i++) {
+        const star = stars[i];
+
+        const x = cx + star.x/(star.z * 0.001);
+        const y = cy + star.y/(star.z * 0.001);
+
+        if (x < 0 || x >= w || y < 0 || y >= h){
+                continue;
+        }
+
+        const d = (star.z/1000.0)
+        const b = 1-d*d
+
+        putPixel(x, y, b);
+    }
+
+    // requestAnimationFrame(tick);
+};
+
+requestAnimationFrame(init);
+
+let w;
+let h;
+
+const setCanvasExtents = () => {
+w = document.body.clientWidth;
+h = document.body.clientHeight;
+canvasOBJ.width = w;
+canvasOBJ.height = h;
+};
+
+setCanvasExtents();
+    
+window.onresize = () => {
+    setCanvasExtents();
+};
+
 </script>
 
 <!--script>
