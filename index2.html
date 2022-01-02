@@ -44,6 +44,7 @@
             width: 100%;
             border: 1px solid steelblue;
             border-radius: 8px;
+            height: 18em;
         }
         #restartBtn {
             cursor: pointer;
@@ -77,25 +78,24 @@
 
 <script>
 var restartBTN = document.getElementById('restartBtn');
-var canvas=document.getElementById("canvas");
-var ctx=canvas.getContext("2d");
-let moveIDX = 0;
+var canvas = document.getElementById("canvas");
+var ctx = canvas.getContext("2d");
+let moveIDX = 0, rocketIDX = 0;
 let scaleDWN = 0, scaleUP = 0;
-let ANM_FRAME = 0;
-let rocketIDX = 0;
-var rocketCanvas = document.createElement('canvas')
+let ANM_FRAME = 0;var rocketCanvas = document.createElement('canvas')
 var rocketCTX = rocketCanvas.getContext('2d');
 var rocketIMG = new Image();
 rocketIMG.src = "./images/rocket3.png";
 rocketIMG.onload = START_ANM;
 var earthCanvas = document.createElement('canvas')
 var earthCTX = earthCanvas.getContext('2d');
-var earthIMG = new Image(60, 60);
+var earthIMG = new Image();
 earthIMG.src = './images/earth1.png';
 earthIMG.onload = START_ANM; 
 var marsCanvas = document.createElement('canvas')
 var marsCTX = marsCanvas.getContext('2d');
-var marsIMG = new Image(60, 60);
+var marsPOSX = 0;
+var marsIMG = new Image();
 marsIMG.src = './images/mars1.png';
 marsIMG.onload = START_ANM; 
 var IMG_COUNT = 0;
@@ -115,23 +115,28 @@ function ANM_LOOP(){
     var rotateIDX = 0;
     if(ANM_FRAME <= 1){ //anmstars
         anmSTARS();
-
-    } else if (ANM_FRAME <= 8 ){ //anmplanet
-
-        
-        earthCTX.drawImage(earthIMG, 0, 0, 80, 80);
-        ctx.drawImage(earthCanvas, 0, 0, 400, 200);
-        marsCTX.drawImage(marsIMG, 50, 50, 80, 80);
-        ctx.drawImage(marsCanvas, 0, 0, 400, 200);
-
+    } else if (ANM_FRAME <= 3 ){ //anmplanet
+        earthCTX.drawImage(earthIMG, 0, 0, 160, 150);
+        ctx.drawImage(earthCanvas, 10, 20, 400, 400);
+        marsCanvas.height = 180;
+        marsPOSX = canvas.width - (canvas.width * 0.35);
+        marsCTX.drawImage(marsIMG, 0, 0, 200, 200);
+        ctx.drawImage(marsCanvas, marsPOSX, 80, 300, 300);
     } else if (ANM_FRAME <= 40){ //anmrocket
         rocketIDX += 0.04;
-        console.log("rocket",rocketIDX);
+        // console.log("rocket",rocketIDX);
         ctx.clearRect(0,0,canvas.width,canvas.height);
-        earthCTX.drawImage(earthIMG, 0, 0, 80, 80);
-        ctx.drawImage(earthCanvas, 0, 0, 400, 200);
-        marsCTX.drawImage(marsIMG, 50, 50, 80, 80);
-        ctx.drawImage(marsCanvas, 0, 0, 400, 200);
+        staticSTARS();
+        earthCTX.drawImage(earthIMG, 0, 0, 160, 150);
+        ctx.drawImage(earthCanvas, 10, 20, 400, 400);
+        marsCanvas.height = 180;
+        marsPOSX = canvas.width - (canvas.width * 0.35);
+        marsCTX.drawImage(marsIMG, 0, 0, 200, 200);
+        ctx.drawImage(marsCanvas, marsPOSX, 80, 300, 300);
+        // earthCTX.drawImage(earthIMG, 0, 0, 80, 80);
+        // ctx.drawImage(earthCanvas, 0, 0, 400, 200);
+        // marsCTX.drawImage(marsIMG, 50, 50, 80, 80);
+        // ctx.drawImage(marsCanvas, 0, 0, 400, 200);
         if(rocketIDX <= 1){
             scaleUP += 0.004;
             scale = 1+scaleUP;
@@ -172,9 +177,13 @@ function ANM_LOOP(){
         console.log('THE END');
 
         ctx.clearRect(0,0,canvas.width,canvas.height);
-
-        earthCTX.drawImage(earthIMG, 0, 0, 80, 80);
-        ctx.drawImage(earthCanvas, 0, 0, 400, 200);
+        staticSTARS();
+        earthCTX.drawImage(earthIMG, 0, 0, 160, 150);
+        ctx.drawImage(earthCanvas, 10, 20, 400, 400);
+        marsCanvas.height = 180;
+        marsPOSX = canvas.width - (canvas.width * 0.35);
+        marsCTX.drawImage(marsIMG, 0, 0, 200, 200);
+        ctx.drawImage(marsCanvas, marsPOSX, 80, 300, 300);
         
         ctx.fillStyle = "skyblue";
         ctx.font = "bold 44pt Impact";
@@ -213,9 +222,18 @@ const clear = () => {
     starCTX.fillRect(0, 0, canvasOBJ.width, canvasOBJ.height);
 };
 
+let starMap = [];
+const staticSTARS = () => {
+    let starPt = {};
+    for (let i = 0; i< starMap.length; i++){
+        starPt = starMap[i];
+        putPixel(starPt.x,starPt.y,starPt.brightness);
+    }
+}
+
 const putPixel = (x, y, brightness) => {
     const intensity = brightness * 255;
-    const rgb = "rgb(" + intensity + "," + intensity + "," + intensity + ")";
+    const rgb = "rgb(" + intensity + "," + intensity + "," + 255 + ")";
     starCTX.fillStyle = rgb;
     starCTX.fillRect(x, y, 1, 1);
 };
@@ -248,6 +266,7 @@ const tick = time => {
     const cx = w/2;
     const cy = h/2;
 
+    starMap = [];
     const count = stars.length;
     for (var i = 0; i < count; i++) {
         const star = stars[i];
@@ -261,7 +280,7 @@ const tick = time => {
 
         const d = (star.z/1000.0)
         const b = 1-d*d
-
+        starMap.push({x:x,y:y,brightness:b});
         putPixel(x, y, b);
     }
 
