@@ -94,7 +94,9 @@ earthIMG.src = './images/earth1.png';
 earthIMG.onload = START_ANM; 
 var marsCanvas = document.createElement('canvas')
 var marsCTX = marsCanvas.getContext('2d');
+var earthPOSX = 0;
 var marsPOSX = 0;
+var XMOVEPOS = 0;
 var marsIMG = new Image();
 marsIMG.src = './images/mars1.png';
 marsIMG.onload = START_ANM; 
@@ -133,11 +135,7 @@ function ANM_LOOP(){
         marsPOSX = canvas.width - (canvas.width * 0.35);
         marsCTX.drawImage(marsIMG, 0, 0, 200, 200);
         ctx.drawImage(marsCanvas, marsPOSX, 80, 300, 300);
-        // earthCTX.drawImage(earthIMG, 0, 0, 80, 80);
-        // ctx.drawImage(earthCanvas, 0, 0, 400, 200);
-        // marsCTX.drawImage(marsIMG, 50, 50, 80, 80);
-        // ctx.drawImage(marsCanvas, 0, 0, 400, 200);
-        if(rocketIDX <= 1){
+        if(rocketIDX <= 5){  //scale up
             scaleUP += 0.004;
             scale = 1+scaleUP;
             rocketCTX.clearRect(0,0,canvas.width,canvas.height);
@@ -148,19 +146,29 @@ function ANM_LOOP(){
             rocketCTX.drawImage(rocketIMG, 0, 0);
             rocketCTX.restore();
             ctx.drawImage(rocketCanvas, 0, 0, 400, 200);
-        } else if (rocketIDX <= 10){
+        } else if (rocketIDX <= 10){    //move rocket
+            var NUM_FRAMES = 100; //change to match frames
+            earthPOSX = 20;
+            var DISTANCE = marsPOSX - earthPOSX;
+            var MovePerFrame = DISTANCE / NUM_FRAMES;
+            XMOVEPOS += MovePerFrame;
+            console.log("POSX",earthPOSX,marsPOSX,MovePerFrame, DISTANCE, XMOVEPOS);
             rocketCTX.clearRect(0,0,canvas.width,canvas.height);
-            rocketCTX.drawImage(rocketIMG,x+moveIDX,y);
-            ctx.drawImage(rocketCanvas, 0, 0, 400, 200); 
-        } else if (rocketIDX <= 20){
+            rocketCTX.drawImage(rocketIMG,XMOVEPOS,y);
+            // rocketCTX.drawImage(rocketIMG,earthPOSX + XMOVEPOS,y);
+            // rocketCTX.drawImage(rocketIMG,x+moveIDX,y);
+            ctx.drawImage(rocketCanvas, 0, 0, DISTANCE + 100, 200); 
+            // ctx.drawImage(rocketCanvas, 0, 0, 400, 200); 
+        } else if (rocketIDX <= 110){  //rotate rocket
             rotateIDX = 0.04;
             rocketCTX.clearRect(0,0,canvas.width,canvas.height);
             rocketCTX.translate(80, 80);
             rocketCTX.rotate(0.004);
             rocketCTX.translate(-80, -80);
+            // rocketCTX.drawImage(rocketIMG,marsPOSX-100,y); 
             rocketCTX.drawImage(rocketIMG,x+moveIDX,y); 
             ctx.drawImage(rocketCanvas, 0, 0, 400, 200);
-        } else if (rocketIDX <= 30){
+        } else if (rocketIDX <= 130){  //scale down
             scaleDWN += 0.004;
             scale = 1-scaleDWN;
             rocketCTX.clearRect(0,0,canvas.width,canvas.height);
@@ -174,8 +182,7 @@ function ANM_LOOP(){
         }
 
     } else {  //anmend
-        console.log('THE END');
-
+        // console.log('THE END');
         ctx.clearRect(0,0,canvas.width,canvas.height);
         staticSTARS();
         earthCTX.drawImage(earthIMG, 0, 0, 160, 150);
@@ -187,7 +194,7 @@ function ANM_LOOP(){
         
         ctx.fillStyle = "skyblue";
         ctx.font = "bold 44pt Impact";
-        ctx.fillText("THE END",canvas.width/2-88,canvas.height/2-100);
+        ctx.fillText("THE END",canvas.width/2-88,canvas.height/2+220);
 
         restartBTN.style.display = "block"
 
@@ -223,7 +230,7 @@ const clear = () => {
 };
 
 let starMap = [];
-const staticSTARS = () => {
+function staticSTARS(){
     let starPt = {};
     for (let i = 0; i< starMap.length; i++){
         starPt = starMap[i];
@@ -232,7 +239,7 @@ const staticSTARS = () => {
 }
 
 const putPixel = (x, y, brightness) => {
-    const intensity = brightness * 255;
+    const intensity = brightness * 200; //255;
     const rgb = "rgb(" + intensity + "," + intensity + "," + 255 + ")";
     starCTX.fillStyle = rgb;
     starCTX.fillRect(x, y, 1, 1);
@@ -275,7 +282,7 @@ const tick = time => {
         const y = cy + star.y/(star.z * 0.001);
 
         if (x < 0 || x >= w || y < 0 || y >= h){
-                continue;
+            continue;
         }
 
         const d = (star.z/1000.0)
