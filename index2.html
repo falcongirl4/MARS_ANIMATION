@@ -94,9 +94,9 @@ earthIMG.src = './images/earth1.png';
 earthIMG.onload = START_ANM; 
 var marsCanvas = document.createElement('canvas')
 var marsCTX = marsCanvas.getContext('2d');
-var earthPOSX = 0;
+var earthPOSX = 20;
 var marsPOSX = 0;
-var XMOVEPOS = 0;
+var XMOVEPOS = earthPOSX;
 var marsIMG = new Image();
 marsIMG.src = './images/mars1.png';
 marsIMG.onload = START_ANM; 
@@ -112,7 +112,7 @@ function RE_START_ANM(){ moveIDX=0; scaleDWN=0; ANM_FRAME=0; rocketIDX=0;
 function ANM_LOOP(){
     ANM_FRAME += 0.04;
     // console.log(ANM_FRAME)
-    var x = 50, y=50;
+    var x = 20, y=50;
     moveIDX += 0.08;
     var rotateIDX = 0;
     if(ANM_FRAME <= 1){ //anmstars
@@ -145,40 +145,52 @@ function ANM_LOOP(){
             rocketCTX.translate(-rocketIMG.width + 10, -rocketIMG.height );
             rocketCTX.drawImage(rocketIMG, 0, 0);
             rocketCTX.restore();
-            ctx.drawImage(rocketCanvas, 0, 0, 400, 200);
-        } else if (rocketIDX <= 10){    //move rocket
-            var NUM_FRAMES = 100; //change to match frames
-            earthPOSX = 20;
-            var DISTANCE = marsPOSX - earthPOSX;
+            ctx.drawImage(rocketCanvas, 0, 150, 400, 200);
+        } else if (rocketIDX <= 8){    //pause top
+            ctx.drawImage(rocketCanvas, 0, 150, 400, 200);
+        } else if (rocketIDX <= 20){    //move rocket
+            var NUM_FRAMES = 12 / 0.04; //change to match frames (diff two above) / div by step
+            // var NUM_FRAMES = 12; //change to match frames (diff two above)
+            // earthPOSX = 20;
+            var DISTANCE = marsPOSX - earthPOSX + 50;
             var MovePerFrame = DISTANCE / NUM_FRAMES;
             XMOVEPOS += MovePerFrame;
-            console.log("POSX",earthPOSX,marsPOSX,MovePerFrame, DISTANCE, XMOVEPOS);
+            // if(XMOVEPOS > marsPOSX - 100){XMOVEPOS = marsPOSX-100;}
+            console.log("POSX",earthPOSX,marsPOSX, DISTANCE,MovePerFrame,XMOVEPOS);
             rocketCTX.clearRect(0,0,canvas.width,canvas.height);
-            rocketCTX.drawImage(rocketIMG,XMOVEPOS,y);
+            // rocketCTX.drawImage(rocketIMG,XMOVEPOS,y);
             // rocketCTX.drawImage(rocketIMG,earthPOSX + XMOVEPOS,y);
             // rocketCTX.drawImage(rocketIMG,x+moveIDX,y);
-            ctx.drawImage(rocketCanvas, 0, 0, DISTANCE + 100, 200); 
+            // rocketCTX.drawImage(rocketIMG,x,y);
+            rocketCTX.drawImage(rocketIMG,0,0);
+            ctx.drawImage(rocketCanvas, XMOVEPOS, 160, 450, 200); 
+            // ctx.drawImage(rocketCanvas, 0, 140, DISTANCE + 200, 200); 
             // ctx.drawImage(rocketCanvas, 0, 0, 400, 200); 
-        } else if (rocketIDX <= 110){  //rotate rocket
-            rotateIDX = 0.04;
-            rocketCTX.clearRect(0,0,canvas.width,canvas.height);
-            rocketCTX.translate(80, 80);
-            rocketCTX.rotate(0.004);
-            rocketCTX.translate(-80, -80);
-            // rocketCTX.drawImage(rocketIMG,marsPOSX-100,y); 
-            rocketCTX.drawImage(rocketIMG,x+moveIDX,y); 
-            ctx.drawImage(rocketCanvas, 0, 0, 400, 200);
-        } else if (rocketIDX <= 130){  //scale down
+        } else if (rocketIDX <= 22){  //pause rocket
+            console.log('pause');
+            ctx.drawImage(rocketCanvas, XMOVEPOS, 150, 400, 200); 
+        } else if (rocketIDX <= 30){  // scale down //rotate rocket
+        //     rotateIDX = 0.04;
+        //     rocketCTX.clearRect(0,0,canvas.width,canvas.height);
+        //     rocketCTX.translate(80, 80);
+        //     rocketCTX.rotate(0.004);
+        //     rocketCTX.translate(-80, -80);
+        //     // rocketCTX.drawImage(rocketIMG,marsPOSX-100,y); 
+        //     // rocketCTX.drawImage(rocketIMG,x+moveIDX,y); 
+        //     rocketCTX.drawImage(rocketIMG,0,0); 
+        //     ctx.drawImage(rocketCanvas, XMOVEPOS, 150, 400, 200);
+        //     // ctx.drawImage(rocketCanvas, 0, 0, 400, 200);
+        // } else if (rocketIDX <= 35){  //scale down
             scaleDWN += 0.004;
             scale = 1-scaleDWN;
             rocketCTX.clearRect(0,0,canvas.width,canvas.height);
             rocketCTX.save();
-            rocketCTX.translate(x + rocketIMG.width + 10, y + rocketIMG.height );
+            rocketCTX.translate(x + rocketIMG.width - 10, y + rocketIMG.height );
             rocketCTX.scale(scale, scale);
-            rocketCTX.translate(-rocketIMG.width + 10, -rocketIMG.height );
+            rocketCTX.translate(-rocketIMG.width - 10, -rocketIMG.height );
             rocketCTX.drawImage(rocketIMG, 0, 0);
             rocketCTX.restore();
-            ctx.drawImage(rocketCanvas, 0, 0, 400, 200);
+            ctx.drawImage(rocketCanvas, XMOVEPOS, 150, 400, 200);
         }
 
     } else {  //anmend
