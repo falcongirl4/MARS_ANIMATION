@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mars Simulation</title>
+
+    <style>
+      body {
+          background: rgb(0, 0, 0);
+          color: rgb(15, 255, 7);
+        }  
+
+         header {
+             font-family: fantasy;
+             font-size: 2.222em;
+             display: flex;
+             justify-content: center;
+             margin: 2em;
+             border: 5px dashed rgb(6, 128, 57);
+             padding: 0.555em;
+             border-radius: 60px;
+             box-shadow: inset rgb(0, 9, 138) 20px 18px 20px 20px;
+             text-shadow: rgb(2, 183, 255) 12px 11px 7px;
+        }
+         section {
+              box-shadow: rgb(255, 255, 255)  -1px 4px 11px 11px;
+              font-size: 1.555em;
+              border-radius: 10px;
+              border:  rgb(104, 43, 104);
+              padding: 1em;
+              margin: 1em;
+        }
+         footer {
+              box-shadow: rgb(254, 255, 255)  -1px 4px 11px 11px;
+              font-size: 1.555em;
+              border-radius: 60px;
+              border:  rgb(255, 0, 255);
+              padding: 1em;
+              margin: 2em;
+              justify-content: center;
+              display: flex;
+        }
+        canvas {
+            width: 100%;
+            border: 1px solid rgb(255, 255, 255);
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+   <header>MARS Simulation</header> 
+   <section>
+    <canvas id="canvasID"></canvas>
+   </section> 
+
+   <footer>Made by falcongirl and team</footer>
+</body>
+<script>
+    const canvasOBJ = document.getElementById("canvasID");
+    const ctx = canvasOBJ.getContext("2d");
+
+    const makeStars = function (count) {
+        const out = [];
+        for (let i=0;i<count;i++){
+            const s = {
+                x: Math.random()*1600-800,
+                y: Math.random()*900-450,
+                z: Math.random()*1000
+            };
+            out.push(s);
+        }
+        return out;
+    }
+
+    let stars = makeStars( 15000 );
+
+    const clear = () => {
+        ctx.fillStyle = "black";
+        ctx.fillRect(0, 0, canvasOBJ.width, canvasOBJ.height);
+    };
+
+    const putPixel = (x, y, brightness) => {
+        const intensity = brightness * 255;
+        const rgb = "rgb(" + intensity + "," + intensity + "," + 255 + ")";
+        ctx.fillStyle = rgb;
+        // ctx.fillStyle = "rgb(0,0,255)";  //rgb;
+        ctx.fillRect(x, y, 1, 1);
+    };
+
+    const moveStars = (distance) => {
+        const count = stars.length;
+        for (var i = 0; i < count; i++) {
+            const s = stars[i];
+            s.z -= distance;
+            while (s.z <= 1){
+                s.z += 1000;
+            }
+        }
+    }
+
+
+    let prevTime;
+    const init = time => {
+      prevTime = time;
+      requestAnimationFrame(tick);
+    };
+
+    const tick = time => {
+        let elapsed = time - prevTime;
+        prevTime = time;
+
+        moveStars(elapsed*0.1);
+
+        clear();
+
+        const cx = w/2;
+        const cy = h/2;
+
+        const count = stars.length;
+        for (var i = 0; i < count; i++) {
+            const star = stars[i];
+
+            const x = cx + star.x/(star.z * 0.001);
+            const y = cy + star.y/(star.z * 0.001);
+
+            if (x < 0 || x >= w || y < 0 || y >= h){
+                 continue;
+            }
+
+            const d = (star.z/1000.0)
+            const b = 1-d*d
+
+            putPixel(x, y, b);
+        }
+
+        requestAnimationFrame(tick);
+    };
+
+    requestAnimationFrame(init);
+
+    let w;
+    let h;
+
+    const setCanvasExtents = () => {
+    w = document.body.clientWidth;
+    h = document.body.clientHeight;
+    canvasOBJ.width = w;
+    canvasOBJ.height = h;
+    };
+
+    setCanvasExtents();
+        
+    window.onresize = () => {
+        setCanvasExtents();
+    };
+
+
+</script>
+</html>

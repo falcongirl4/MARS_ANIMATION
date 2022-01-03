@@ -102,7 +102,8 @@ marsIMG.src = './images/mars1.png';
 marsIMG.onload = START_ANM; 
 var IMG_COUNT = 0;
 function START_ANM(){ IMG_COUNT++; if(IMG_COUNT>=3){ ANM_LOOP(); } }
-function RE_START_ANM(){ moveIDX=0; scaleDWN=0; ANM_FRAME=0; rocketIDX=0; 
+function RE_START_ANM(){ 
+    moveIDX=0; scaleUP=0; scaleDWN=0; ANM_FRAME=0; rocketIDX=0; XMOVEPOS = earthPOSX;
     rocketCanvas = document.createElement('canvas')
     rocketCTX = rocketCanvas.getContext('2d');
     rocketIMG = new Image();
@@ -115,16 +116,16 @@ function ANM_LOOP(){
     var x = 20, y=50;
     moveIDX += 0.08;
     var rotateIDX = 0;
-    if(ANM_FRAME <= 1){ //anmstars
+    if(ANM_FRAME <= 8){ //anmstars
         anmSTARS();
-    } else if (ANM_FRAME <= 3 ){ //anmplanet
+    } else if (ANM_FRAME <= 10 ){ //anmplanet
         earthCTX.drawImage(earthIMG, 0, 0, 160, 150);
         ctx.drawImage(earthCanvas, 10, 20, 400, 400);
         marsCanvas.height = 180;
         marsPOSX = canvas.width - (canvas.width * 0.35);
         marsCTX.drawImage(marsIMG, 0, 0, 200, 200);
         ctx.drawImage(marsCanvas, marsPOSX, 80, 300, 300);
-    } else if (ANM_FRAME <= 40){ //anmrocket
+    } else if (ANM_FRAME <= 44){ //anmrocket
         rocketIDX += 0.04;
         // console.log("rocket",rocketIDX);
         ctx.clearRect(0,0,canvas.width,canvas.height);
