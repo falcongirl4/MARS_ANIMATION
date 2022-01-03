@@ -11,7 +11,6 @@ Last, LINK to the DEPLOYED WEBSITE: https://falcongirl4.github.io/MARS_ANIMATION
 -----
 
 ### GOALS
-- Create a Website for FalconGirl4 to POST her digital art - FOREVER!
 - Introduce HTML, CSS, and JavaScript.
 - Learn Web Design.
 - Practice Web Collaboration.
