@@ -6,7 +6,7 @@ First website to learn how to Design and Code!
 Over Google Meetup, the team BUILDS an animated website together.
 We use CLOUD COLLABORATION, on GitHub, to HOST a STARSHIP SIMULATION!
 Also we use YOUTUBE, to learn DESIGN and CODE, and reference our resources (below).
-Last, find the LINK to the WEBSITE at the bottom of this page.
+Last, LINK to the DEPLOYED WEBSITE: https://falcongirl4.github.io/MARS_ANIMATION/
 
 -----
 
@@ -23,20 +23,19 @@ Last, find the LINK to the WEBSITE at the bottom of this page.
 - Creative
 - Design
 - Technical
-- Collaborative
+- Collaboration
 - Project Management
 ----
 #### DESIGN
-- Rock texture
 - Background star animation
-- Plant animation
-- Distance animation
+- Planet images
 - StarShip animation
-- Start and Launch buttons
+- Restart Button
 ----
 #### REFERENCES / ATTRIBUTIONS / CC0
 - HTML5 Canvas Documentation
 - Starfield Animations
+    - https://betterprogramming.pub/fun-with-html-canvas-lets-create-a-star-field-a46b0fed5002
 - Planet Images
 - Starship Images CC0
     - https://pixabay.com/vectors/rocket-space-ship-space-launch-312767/
@@ -44,6 +43,6 @@ Last, find the LINK to the WEBSITE at the bottom of this page.
     - https://www.goodfreephotos.com/astrophotography/comparison-of-earth-and-mars.jpg.php
     
 ----
-Deployed Link: https://falcongirl4.github.io/FirstWebsite/ 
+Deployed Link: https://falcongirl4.github.io/MARS_ANIMATION/
 Enjoy!!!
 
