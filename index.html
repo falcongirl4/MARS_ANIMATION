@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mars Simulation</title>
+
+    <style>
+        body {
+            background:black;
+            color: steelblue;
+        }
+        header {
+            font-family: fantasy;
+            font-size: 2.222em;
+            display: flex;
+            justify-content: center;
+            margin: 1em;
+            border: 1px dashed steelblue;
+            padding: 0.555em;
+            border-radius: 60px;
+            box-shadow: inset aquamarine 3px 4px 20px 0px;  
+            text-shadow: #a00a96 -7px 1px 20px;
+            background: #160b20;  
+        }
+        section {
+            box-shadow:  aquamarine 3px 4px 20px 0px;
+            margin: 1em;
+            border-radius: 22px;
+            border:1px solid steelblue;
+            padding: 1em;
+        }
+        footer {
+            box-shadow:  lightyellow 3px 4px 20px 0px;
+            margin: 3.333em;
+            border-radius: 60px;
+            border:1px solid steelblue;
+            padding: 1em;
+            display: flex;
+            justify-content: center;
+        }
+        canvas {
+            width: 100%;
+            border: 1px solid steelblue;
+            border-radius: 8px;
+            height: 18em;
+        }
+        #restartBtn {
+            cursor: pointer;
+            height: 4em;
+            width: 8em;
+            border-radius: 22px;
+            background: blueviolet;
+            font-style: oblique;
+            font-weight: bold;
+            text-shadow: -1px -1px 0px lightsteelblue;
+            border: 2px solid lightskyblue;
+            box-shadow: 0px 1px 7px 4px steelblue;
+            display:none;
+        }
+        #btnBar {
+            display: flex;
+            justify-content: center;
+        }
+    </style>
+</head>
+<body>
+    <header>MARS SIMULATION</header>
+    <section>
+        <canvas id="canvas"></canvas>
+        <aside id="btnBar"><button id="restartBtn">RESTART</button></aside>
+        <!-- <canvas id="canvasID"></canvas> -->
+    </section>
+
+    <footer>Made by falcongirl4 and team.</footer>
+</body>
+
+<script>
+var restartBTN = document.getElementById('restartBtn');
+var canvas = document.getElementById("canvas");
+var ctx = canvas.getContext("2d");
+let moveIDX = 0, rocketIDX = 0;
+let scaleDWN = 0, scaleUP = 0;
+let ANM_FRAME = 0;var rocketCanvas = document.createElement('canvas')
+var rocketCTX = rocketCanvas.getContext('2d');
+var rocketIMG = new Image();
+rocketIMG.src = "./images/rocket3.png";
+rocketIMG.onload = START_ANM;
+var earthCanvas = document.createElement('canvas')
+var earthCTX = earthCanvas.getContext('2d');
+var earthIMG = new Image();
+earthIMG.src = './images/earth1.png';
+earthIMG.onload = START_ANM; 
+var marsCanvas = document.createElement('canvas')
+var marsCTX = marsCanvas.getContext('2d');
+var earthPOSX = 20;
+var marsPOSX = 0;
+var XMOVEPOS = earthPOSX;
+var marsIMG = new Image();
+marsIMG.src = './images/mars1.png';
+marsIMG.onload = START_ANM; 
+var IMG_COUNT = 0;
+function START_ANM(){ IMG_COUNT++; if(IMG_COUNT>=3){ ANM_LOOP(); } }
+function RE_START_ANM(){ 
+    moveIDX=0; scaleUP=0; scaleDWN=0; ANM_FRAME=0; rocketIDX=0; XMOVEPOS = earthPOSX;
+    rocketCanvas = document.createElement('canvas')
+    rocketCTX = rocketCanvas.getContext('2d');
+    rocketIMG = new Image();
+    rocketIMG.src = "./images/rocket3.png";
+    rocketIMG.onload = ANM_LOOP; 
+}
+function ANM_LOOP(){
+    ANM_FRAME += 0.04;
+    // console.log(ANM_FRAME)
+    var x = 20, y=50;
+    moveIDX += 0.08;
+    var rotateIDX = 0;
+    if(ANM_FRAME <= 8){ //anmstars
+        anmSTARS();
+    } else if (ANM_FRAME <= 10 ){ //anmplanet
+        earthCTX.drawImage(earthIMG, 0, 0, 160, 150);
+        ctx.drawImage(earthCanvas, 10, 20, 400, 400);
+        marsCanvas.height = 180;
+        marsPOSX = canvas.width - (canvas.width * 0.35);
+        marsCTX.drawImage(marsIMG, 0, 0, 200, 200);
+        ctx.drawImage(marsCanvas, marsPOSX, 80, 300, 300);
+    } else if (ANM_FRAME <= 44){ //anmrocket
+        rocketIDX += 0.04;
+        // console.log("rocket",rocketIDX);
+        ctx.clearRect(0,0,canvas.width,canvas.height);
+        staticSTARS();
+        earthCTX.drawImage(earthIMG, 0, 0, 160, 150);
+        ctx.drawImage(earthCanvas, 10, 20, 400, 400);
+        marsCanvas.height = 180;
+        marsPOSX = canvas.width - (canvas.width * 0.35);
+        marsCTX.drawImage(marsIMG, 0, 0, 200, 200);
+        ctx.drawImage(marsCanvas, marsPOSX, 80, 300, 300);
+        if(rocketIDX <= 5){  //scale up
+            scaleUP += 0.004;
+            scale = 1+scaleUP;
+            rocketCTX.clearRect(0,0,canvas.width,canvas.height);
+            rocketCTX.save();
+            rocketCTX.translate(x + rocketIMG.width + 10, y + rocketIMG.height );
+            rocketCTX.scale(scale, scale);
+            rocketCTX.translate(-rocketIMG.width + 10, -rocketIMG.height );
+            rocketCTX.drawImage(rocketIMG, 0, 0);
+            rocketCTX.restore();
+            ctx.drawImage(rocketCanvas, 0, 150, 400, 200);
+        } else if (rocketIDX <= 8){    //pause top
+            ctx.drawImage(rocketCanvas, 0, 150, 400, 200);
+        } else if (rocketIDX <= 20){    //move rocket
+            var NUM_FRAMES = 12 / 0.04; //change to match frames (diff two above) / div by step
+            // var NUM_FRAMES = 12; //change to match frames (diff two above)
+            // earthPOSX = 20;
+            var DISTANCE = marsPOSX - earthPOSX + 50;
+            var MovePerFrame = DISTANCE / NUM_FRAMES;
+            XMOVEPOS += MovePerFrame;
+            // if(XMOVEPOS > marsPOSX - 100){XMOVEPOS = marsPOSX-100;}
+            // console.log("POSX",earthPOSX,marsPOSX, DISTANCE,MovePerFrame,XMOVEPOS);
+            rocketCTX.clearRect(0,0,canvas.width,canvas.height);
+            // rocketCTX.drawImage(rocketIMG,XMOVEPOS,y);
+            // rocketCTX.drawImage(rocketIMG,earthPOSX + XMOVEPOS,y);
+            // rocketCTX.drawImage(rocketIMG,x+moveIDX,y);
+            // rocketCTX.drawImage(rocketIMG,x,y);
+            rocketCTX.drawImage(rocketIMG,0,0);
+            ctx.drawImage(rocketCanvas, XMOVEPOS, 160, 450, 200); 
+            // ctx.drawImage(rocketCanvas, 0, 140, DISTANCE + 200, 200); 
+            // ctx.drawImage(rocketCanvas, 0, 0, 400, 200); 
+        } else if (rocketIDX <= 22){  //pause rocket
+            ctx.drawImage(rocketCanvas, XMOVEPOS, 150, 400, 200); 
+        } else if (rocketIDX <= 30){  // scale down //rotate rocket
+        //     rotateIDX = 0.04;
+        //     rocketCTX.clearRect(0,0,canvas.width,canvas.height);
+        //     rocketCTX.translate(80, 80);
+        //     rocketCTX.rotate(0.004);
+        //     rocketCTX.translate(-80, -80);
+        //     // rocketCTX.drawImage(rocketIMG,marsPOSX-100,y); 
+        //     // rocketCTX.drawImage(rocketIMG,x+moveIDX,y); 
+        //     rocketCTX.drawImage(rocketIMG,0,0); 
+        //     ctx.drawImage(rocketCanvas, XMOVEPOS, 150, 400, 200);
+        //     // ctx.drawImage(rocketCanvas, 0, 0, 400, 200);
+        // } else if (rocketIDX <= 35){  //scale down
+            scaleDWN += 0.004;
+            scale = 1-scaleDWN;
+            rocketCTX.clearRect(0,0,canvas.width,canvas.height);
+            rocketCTX.save();
+            rocketCTX.translate(x + rocketIMG.width - 10, y + rocketIMG.height );
+            rocketCTX.scale(scale, scale);
+            rocketCTX.translate(-rocketIMG.width - 10, -rocketIMG.height );
+            rocketCTX.drawImage(rocketIMG, 0, 0);
+            rocketCTX.restore();
+            ctx.drawImage(rocketCanvas, XMOVEPOS, 150, 400, 200);
+        }
+
+    } else {  //anmend
+        // console.log('THE END');
+        ctx.clearRect(0,0,canvas.width,canvas.height);
+        staticSTARS();
+        earthCTX.drawImage(earthIMG, 0, 0, 160, 150);
+        ctx.drawImage(earthCanvas, 10, 20, 400, 400);
+        marsCanvas.height = 180;
+        marsPOSX = canvas.width - (canvas.width * 0.35);
+        marsCTX.drawImage(marsIMG, 0, 0, 200, 200);
+        ctx.drawImage(marsCanvas, marsPOSX, 80, 300, 300);
+        
+        ctx.fillStyle = "skyblue";
+        ctx.font = "bold 44pt Impact";
+        ctx.fillText("THE END",canvas.width/2-88,canvas.height/2+220);
+
+        restartBTN.style.display = "block"
+
+        return;
+    }
+    requestAnimationFrame(ANM_LOOP);
+}
+/********************************************STARS***********************************/
+function anmSTARS(){
+    requestAnimationFrame(tick);
+}
+const canvasOBJ = document.getElementById("canvas");
+const starCTX = canvasOBJ.getContext("2d");
+
+const makeStars = function (count) {
+    const out = [];
+    for (let i=0;i<count;i++){
+        const s = {
+            x: Math.random()*1600-800,
+            y: Math.random()*900-450,
+            z: Math.random()*1000
+        };
+        out.push(s);
+    }
+    return out;
+}
+
+let stars = makeStars( 10000 );
+
+const clear = () => {
+    starCTX.fillStyle = "black";
+    starCTX.fillRect(0, 0, canvasOBJ.width, canvasOBJ.height);
+};
+
+let starMap = [];
+function staticSTARS(){
+    let starPt = {};
+    for (let i = 0; i< starMap.length; i++){
+        starPt = starMap[i];
+        putPixel(starPt.x,starPt.y,starPt.brightness);
+    }
+}
+
+const putPixel = (x, y, brightness) => {
+    const intensity = brightness * 200; //255;
+    const rgb = "rgb(" + intensity + "," + intensity + "," + 255 + ")";
+    starCTX.fillStyle = rgb;
+    starCTX.fillRect(x, y, 1, 1);
+};
+
+const moveStars = (distance) => {
+    const count = stars.length;
+    for (var i = 0; i < count; i++) {
+        const s = stars[i];
+        s.z -= distance;
+        while (s.z <= 1){
+            s.z += 1000;
+        }
+    }
+}
+
+let prevTime;
+const init = time => {
+    prevTime = time;
+    requestAnimationFrame(tick);
+};
+
+const tick = time => {
+    let elapsed = time - prevTime;
+    prevTime = time;
+
+    moveStars(elapsed*0.1);
+
+    clear();
+
+    const cx = w/2;
+    const cy = h/2;
+
+    starMap = [];
+    const count = stars.length;
+    for (var i = 0; i < count; i++) {
+        const star = stars[i];
+
+        const x = cx + star.x/(star.z * 0.001);
+        const y = cy + star.y/(star.z * 0.001);
+
+        if (x < 0 || x >= w || y < 0 || y >= h){
+            continue;
+        }
+
+        const d = (star.z/1000.0)
+        const b = 1-d*d
+        starMap.push({x:x,y:y,brightness:b});
+        putPixel(x, y, b);
+    }
+
+    // requestAnimationFrame(tick);
+};
+
+requestAnimationFrame(init);
+
+let w;
+let h;
+
+const setCanvasExtents = () => {
+w = document.body.clientWidth;
+h = document.body.clientHeight;
+canvasOBJ.width = w;
+canvasOBJ.height = h;
+};
+
+setCanvasExtents();
+    
+window.onresize = () => {
+    setCanvasExtents();
+};
+
+
+var restartBTN = document.getElementById('restartBtn');
+restartBTN.addEventListener("click", function(){
+    // console.log('restart');
+    restartBTN.style.display = "none";
+    RE_START_ANM();
+});
+</script>
+
+<!--script>
+    "use strict";
+    let canvas;
+    let ANMCTX;
+    let rocketIMG;
+
+    window.onload = init;
+    function init(){
+        canvas = document.getElementById('canvas');
+        ANMCTX = canvas.getContext('2d');
+        //INIT----------------ROCKET-.
+        rocketIMG = new Image();
+        rocketIMG.onload = drawRocketIMG; 
+        rocketIMG.src = './images/rocket3.png';
+        function drawRocketIMG() {
+            // ANMCTX.imageSmoothingEnabled = false;
+            ANMCTX.setTransform(1, 0, 0, 1, 0, 0);
+            ANMCTX.rotate(45 * Math.PI / 180);
+            ANMCTX.drawImage(rocketIMG, 100, 30, 64, 64);
+            // ANMCTX.drawImage(rocketIMG, 5, 5, 64, 64, 0, 0, 64, 64);
+        }
+
+        window.requestAnimationFrame(ANMLOOP); //first frame
+    }
+    function ANMLOOP(timeStamp){
+        // console.log('f');
+        window.requestAnimationFrame(ANMLOOP); //recursive next frame
+        ANM();
+    }
+    let index = 1;
+    function ANM(){
+        index+=0.04;
+        // ANMCTX.clear();
+        ANMCTX.clearRect(0,0,64,64);
+        ANMCTX.setTransform(1, 0, 0, 1, 0, 0);
+        ANMCTX.rotate(45 * Math.PI / 180);
+        ANMCTX.drawImage(rocketIMG, 100-index, 30, 64, 64);
+    }
+</script-->
+
+<!--script>
+
+var domCanvas = document.getElementById('canvas');
+var domContext = domCanvas.getContext('2d');
+domContext.fillRect(50,50,150,50);
+
+var canvas = document.createElement('canvas');
+var ctx = canvas.getContext('2d');
+ctx.fillStyle = 'blue';
+ctx.fillRect(50,50,150,150);
+
+var canvas2 = document.createElement('canvas')
+var ctx2 = canvas2.getContext('2d');
+ctx2.fillStyle = 'yellow';
+ctx2.fillRect(50,50,100,50)
+
+var canvas3 = document.createElement('canvas')
+var ctx3 = canvas3.getContext('2d');
+ctx3.fillStyle = 'green';
+ctx3.fillRect(50,50,50,50)
+
+var canvas4 = document.createElement('canvas')
+var ctx4 = canvas4.getContext('2d');
+ctx4.fillStyle = 'green';
+ctx4.fillRect(50,50,50,50)
+
+
+
+const image = new Image(60, 45);
+image.onload = drawPlanetIMG; 
+image.src = './images/earth1.png';
+// image.src = './images/bak/comparison-of-earth-and-mars_800.jpg';
+function drawPlanetIMG() {
+  domContext.drawImage(this, 0, 0, 80, 80);
+}
+
+const image3 = new Image(60, 45);
+image3.onload = drawMarsIMG; 
+image3.src = './images/mars1.png';
+function drawMarsIMG() {
+  domContext.drawImage(this, 50, 50, 80, 80);
+}
+
+
+const image2 = new Image(60, 45);
+image2.onload = drawRocketIMG; 
+image2.src = './images/rocket1.png';
+function drawRocketIMG() {
+  domContext.drawImage(this, 50, 50, 80, 80);
+}
+
+// ctx.setTransform(1, 0, 0, 1, 0, 0);
+
+/* render virtual canvases on DOM canvas */
+domContext.drawImage(canvas, 0, 0, 200, 200);
+domContext.drawImage(canvas3, 0, 0, 200, 200);
+// domContext.drawImage(canvas2, 0, 0, 200, 200);
+
+</script-->
+<!--script>
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+
+const image = new Image(60, 45); // Using optional size for image
+image.onload = drawImageActualSize; // Draw when image has loaded
+
+// Load an image of intrinsic size 300x227 in CSS pixels
+// image.src = 'rhino.jpg';
+image.src = './images/bak/comparison-of-earth-and-mars_800.jpg';
+
+
+function drawImageActualSize() {
+  // Use the intrinsic size of image in CSS pixels for the canvas element
+  canvas.width = this.naturalWidth;
+  canvas.height = this.naturalHeight;
+
+  // Will draw the image as 300x227, ignoring the custom size of 60x45
+  // given in the constructor
+  ctx.drawImage(this, 0, 0);
+
+  // To use the custom size we'll have to specify the scale parameters
+  // using the element's width and height properties - lets draw one
+  // on top in the corner:
+  ctx.drawImage(this, 0, 0, this.width, this.height);
+}
+</script-->
+
+<!--script>
+    var width = 400, height = 400;
+    const canvasOBJ = document.getElementById("canvasID");
+    const ctx = canvasOBJ.getContext("2d");
+    var CANVAS_LAYERZ = ctx;
+    var layerz = [];  //allows for ctx to write multiple times with clearRect abstracted out.
+    function addLAYERZ(layerz) { 
+    //   var layer = createCanvas(width,height)
+      var layer = document.createElement('canvas');
+      layer.width = width;
+      layer.height = height;
+      var layerContext = layer.getContext("2d");
+      layerContext.clearRect(0, 0, width, height);
+      layerz.push(layer);
+      return layer;
+    }
+    function paintLAYERZ(canvasContext, layerz) { 
+      canvasContext.clearRect(0, 0, width, height);
+      for(var i = 0; i < layerz.length; i++) {
+        canvasContext.drawImage(layerz[i], 0, 0);  //convert CANVAS layerz to CTX!
+      }
+    }
+
+   //-----------LOAD IMGs, called by Promise. When all selected images load, then BUILD.
+//    Promise.all(promisedBITZ) //waits for all IMGZ to load before rendering.
+//    .then( (imageSet) => { // .all([ logo, cp, tm, sky1,bg1,hero1 ])
+//         // console.log('BITZ-LOADED',imageSet)
+//         var newLayerZ = addLAYERZ(layerz); 
+//         var layerCTX = newLayerZ.getContext("2d");
+//         //BITZSET in CONFIG populates LAYERBITZ in VIEW.
+//         //The LAYER BITZ are ENCASED here imageSet[0], imageSet[1] - from BITZSET
+//         // layerCTX.drawImage(imageSet[0],0, 0, 1000, 1000) //sky
+//         // layerCTX.drawImage(imageSet[1],0, 0, 1000, 1000) //bg
+//         // layerCTX.drawImage(imageSet[2],0, 0, 1000, 1000) //hero
+//         // layerCTX.drawImage(imageSet[3],0, 0, 1000, 1000) //frame
+//         for(var i = 0; i<imageSet.length;i++){ //dynamic draw layerz
+//             // layerCTX.drawImage(imageSet[i],0, 0, 1000, 1000) 
+//             layerCTX.drawImage(imageSet[i],0, 0, width, height) 
+//         }
+//    }).catch( (e) => {console.log(e)});
+
+
+    var img1 = new Image(100,100);
+    img1.addEventListener('load', function() {
+        var newLayerZ = addLAYERZ(layerz);
+        var layerCTX = newLayerZ.getContext("2d");
+        layerCTX.drawImage(this,30, 22, 55, 55)
+
+        newLayerZ = addLAYERZ(layerz);
+        layerCTX = newLayerZ.getContext("2d");
+        layerCTX.fillStyle = "skyblue";
+        layerCTX.font = "bold 22pt Impact";
+        layerCTX.textBaseline = "top";
+        layerCTX.textAlign = "right";
+        layerCTX.shadowColor="black";
+        layerCTX.fillText("KRYPTOBITZ", 945, 28);
+
+
+
+    }, false);
+    img1.src = './images/bak/comparison-of-earth-and-mars_800.jpg';
+
+    //SYNCHRONOUSLY LOAD ALL 
+    // const logo = loadImage(`${rootPATH}\\copyrightNetCinematics\\nxlogo1.png`)
+    // const cp = loadImage(`${rootPATH}\\copyrightNetCinematics\\cp1.png`)
+    // const tm = loadImage(`${rootPATH}\\copyrightNetCinematics\\tm1.png`)
+    // Promise
+    // .all([ logo, cp, tm])
+    // .then(function(data){ // console.log('LOADED IMGS',data)
+    //     var newLayerZ = addLAYERZ(layerz);
+    //     var layerCTX = newLayerZ.getContext("2d");
+    //     layerCTX.drawImage(data[0],30, 22, 55, 55)
+    //     layerCTX.drawImage(data[1],26, 940, 32, 32)
+    //     layerCTX.drawImage(data[2],948, 50, 32, 32)
+        
+    //     function drawNUMZ(_currentCardNum, _selectedBITZ){
+    //         var newLayerZ = addLAYERZ(layerz); 
+    //         layerCTX = newLayerZ.getContext("2d");
+    //         layerCTX.fillStyle = "#333333";
+    //         layerCTX.font = "bold 14pt calibri";
+    //         layerCTX.textBaseline = "top";
+    //         layerCTX.textAlign = "left";
+    //         layerCTX.fillText("1 of 1", 36, 74);
+    //     }
+    // });
+</script-->
+<!--script>
+    const canvasOBJ = document.getElementById("canvasID");
+    const ctx = canvasOBJ.getContext("2d");
+
+    const makeStars = function (count) {
+        const out = [];
+        for (let i=0;i<count;i++){
+            const s = {
+                x: Math.random()*1600-800,
+                y: Math.random()*900-450,
+                z: Math.random()*1000
+            };
+            out.push(s);
+        }
+        return out;
+    }
+
+    let stars = makeStars( 10000 );
+
+    const clear = () => {
+        ctx.fillStyle = "black";
+        ctx.fillRect(0, 0, canvasOBJ.width, canvasOBJ.height);
+    };
+
+    const putPixel = (x, y, brightness) => {
+        const intensity = brightness * 255;
+        const rgb = "rgb(" + intensity + "," + intensity + "," + intensity + ")";
+        ctx.fillStyle = rgb;
+        ctx.fillRect(x, y, 1, 1);
+    };
+
+    const moveStars = (distance) => {
+        const count = stars.length;
+        for (var i = 0; i < count; i++) {
+            const s = stars[i];
+            s.z -= distance;
+            while (s.z <= 1){
+                s.z += 1000;
+            }
+        }
+    }
+
+    let prevTime;
+    const init = time => {
+      prevTime = time;
+      requestAnimationFrame(tick);
+    };
+
+    const tick = time => {
+        let elapsed = time - prevTime;
+        prevTime = time;
+
+        moveStars(elapsed*0.1);
+
+        clear();
+
+        const cx = w/2;
+        const cy = h/2;
+
+        const count = stars.length;
+        for (var i = 0; i < count; i++) {
+            const star = stars[i];
+
+            const x = cx + star.x/(star.z * 0.001);
+            const y = cy + star.y/(star.z * 0.001);
+
+            if (x < 0 || x >= w || y < 0 || y >= h){
+                 continue;
+            }
+
+            const d = (star.z/1000.0)
+            const b = 1-d*d
+
+            putPixel(x, y, b);
+        }
+
+        requestAnimationFrame(tick);
+    };
+
+    requestAnimationFrame(init);
+
+    let w;
+    let h;
+
+    const setCanvasExtents = () => {
+    w = document.body.clientWidth;
+    h = document.body.clientHeight;
+    canvasOBJ.width = w;
+    canvasOBJ.height = h;
+    };
+
+    setCanvasExtents();
+        
+    window.onresize = () => {
+        setCanvasExtents();
+    };
+</script-->
+</html>
